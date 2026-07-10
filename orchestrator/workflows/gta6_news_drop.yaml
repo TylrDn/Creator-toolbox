@@ -1,0 +1,31 @@
+name: gta6_news_drop
+description: Handle a GTA 6 news drop across Discord and short-form video
+steps:
+  - id: research
+    agent: research
+
+  - id: draft_discord
+    agent: drafting
+    template: community/discord-announcement.md
+
+  - id: draft_short
+    agent: drafting
+    template: content/short-video.md
+
+  - id: review_short
+    agent: critic
+    review_step: draft_short
+
+  - id: monetize_short
+    agent: monetization
+    content_type: short_video
+
+  - id: publish_discord
+    agent: community
+    action: publish_discord
+    extra:
+      source_step: draft_discord
+
+  - id: queue_youtube
+    agent: community
+    action: queue_youtube

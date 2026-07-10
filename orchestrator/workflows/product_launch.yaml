@@ -1,0 +1,31 @@
+name: product_launch
+description: Launch a digital product with email and social queue
+steps:
+  - id: research
+    agent: research
+
+  - id: draft_product_page
+    agent: drafting
+    template: monetization/product-bundle.md
+
+  - id: draft_email
+    agent: drafting
+    template: content/email-update.md
+
+  - id: review_assets
+    agent: critic
+    review_step: draft_email
+
+  - id: monetize_launch
+    agent: monetization
+    content_type: product_launch
+
+  - id: queue_email
+    agent: community
+    action: queue_email
+    extra:
+      source_step: draft_email
+
+  - id: queue_social
+    agent: community
+    action: queue_social
