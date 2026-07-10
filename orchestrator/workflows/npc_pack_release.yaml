@@ -1,0 +1,21 @@
+name: npc_pack_release
+description: Release an AI NPC pack with sales assets
+steps:
+  - id: research
+    agent: research
+
+  - id: draft_npc_pack
+    agent: drafting
+    template: monetization/product-bundle.md
+
+  - id: review_pack
+    agent: critic
+    review_step: draft_npc_pack
+
+  - id: draft_sales_assets
+    agent: drafting
+    template: content/email-update.md
+
+  - id: monetize_pack
+    agent: monetization
+    content_type: npc_pack

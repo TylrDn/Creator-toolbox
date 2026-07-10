@@ -1,0 +1,40 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Generated output
+/output/
+
+# Logs
+*.log
+/logs/
+orchestrator/logs/*.json
+orchestrator/logs/*.log
+!orchestrator/logs/.gitkeep
+
+# Node
+node_modules/
+dist/
+build/
+.cache/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.coverage
+htmlcov/
+.coverage.*

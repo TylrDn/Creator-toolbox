@@ -1,45 +1,117 @@
-# GTA 6 Creator Launch Playbook (Scaffold)
+# GTA 6 creator launch playbook
 
-This is a **first-draft playbook** for using Creator Toolbox around Grand Theft Auto VI. It is intentionally high-level and game-agnostic, so it can be adapted as Rockstar reveals more details and terms.
+Phased moves for content, community, and monetization around Grand Theft Auto VI. Use confirmed sources only; label speculation clearly.
 
-## 1. Pre-Launch (Now → Release)
-
-### Content
-- Publish "everything we know" style updates using confirmed sources only.[web:24][web:26]
-- Focus on safe topics: release date, platforms, trailers, official features, and hardware/gear setups.[web:24][web:45]
-- Avoid leaks, datamining, or unverified mechanic claims.
-
-### Community
-- Stand up a Discord with clear channels for news, theory-crafting, and creator collaboration.
-- Run low-friction events (Q&A, watch-alongs for official trailers).
-- Start collecting email and Discord opt-ins for launch alerts.[web:45]
-
-### Monetization
-- Set up affiliate relationships for consoles, storage, capture cards, microphones, and editing tools that are relevant to GTA 6 streaming and content.[web:45][web:40]
-- Draft generic landing pages for "best setup for a big open-world launch" that can be customized later.
-
-## 2. Launch Week
+## Pre-launch (now through release)
 
 ### Content
-- Daily short-form pieces: first impressions, early progression tips, performance and settings guides.
-- Long-form: day-one money/progression routes based on in-game testing, not speculation.
-- Clear labeling of rumor vs fact when discussing unconfirmed systems.[web:45]
+- Publish "what we know" updates sourced from Rockstar Newswire and official channels.
+- Cover safe topics: release window (when confirmed), platforms, trailers, setup guides.
+- Avoid leaks, datamining, and unverified mechanic claims.
 
 ### Community
-- Scheduled live events (launch stream, RP sessions if/when supported).
-- Pinned spoiler policy and moderation rules.
-- Rotating "featured creator" highlights to reward early adopters.
+- Stand up Discord with `#news`, `#chat`, and `#creator-collab` channels.
+- Run low-friction events: trailer watch-alongs, Q&A, countdown streams.
+- Collect email and Discord opt-ins for launch alerts.
 
 ### Monetization
-- Launch bundles that combine guides, checklists, and overlays.
-- Priority placement for affiliates on high-traffic content (YouTube descriptions, pinned tweets).
+- Affiliate relationships for consoles, storage, capture gear, and editing tools.
+- Draft landing pages for "open-world launch setup" that you can customize later.
+- Do not promise in-game earnings or unconfirmed marketplace features.
 
-## 3. Post-Launch
+### Risks
+- Building audience on rumor content that ages poorly.
+- Over-investing in gear before you have a content cadence.
 
-- Iterate guides and templates based on actual in-game behavior and player feedback.
-- Add more specific playbooks once online/creator features are formally documented.
-- Generalize the workflows so they can be reused for future titles.
+### KPIs
+- Email/Discord signups per week
+- Shorts published per week (target: 3-5)
+- Watch time and CTR on news explainer content
 
 ---
 
-This file is deliberately brief and will expand as we learn more about GTA 6 online features, creator tooling, and Rockstar policies.
+## Launch week
+
+### Content
+- Daily shorts: first impressions, settings guides, day-one tips from your own play.
+- One long-form anchor video per major topic (performance, progression, online if live).
+- Label rumor vs fact in every piece that touches unconfirmed systems.
+
+### Community
+- Scheduled launch stream and post-launch debrief.
+- Pinned spoiler policy and moderation rules.
+- Featured creator highlights to reward early contributors.
+
+### Monetization
+- Launch bundles: guides, checklists, overlays (if you sell digital products).
+- Affiliate placement in high-traffic video descriptions and pinned posts.
+- Server whitelist or script product teasers only if already built and compliant.
+
+### Risks
+- Burnout from 24/7 coverage without a content bank.
+- Moderation gaps during traffic spikes.
+
+### KPIs
+- Live concurrent viewers
+- Discord active members (daily)
+- Conversion rate on launch bundle or affiliate clicks
+
+---
+
+## First 30 days post-launch
+
+### Content
+- Shift from "news" to "how-to" and "what I learned" formats.
+- Repurpose long-form into shorts; test hooks from pre-launch winners.
+- Document script devlogs or server ops if those are your product tracks.
+
+### Community
+- Weekly events tied to in-game activities (when supported and allowed).
+- Collect feedback for product roadmap (scripts, NPC packs, server features).
+- Tighten moderation based on first-month incident patterns.
+
+### Monetization
+- Introduce or refine subscription tiers for RP server (if applicable).
+- Ship first paid script or NPC pack only after free tier proves demand.
+- Sponsorship outreach with a media kit built from launch-week stats.
+
+### Risks
+- Attention drop-off after launch hype.
+- Shipping paid products before support workflows exist.
+
+### KPIs
+- Retention: returning viewers / subscribers
+- Paid conversion rate (server or products)
+- Support ticket volume and response time
+
+---
+
+## First 90 days post-launch
+
+### Content
+- Seasonal content pillars: economy guides, RP highlights, creator economy commentary.
+- Case studies from your own script or server business (real numbers, honest failures).
+- Cross-promote between YouTube, Discord, and email on a fixed weekly rhythm.
+
+### Community
+- Ambassador or moderator program if volume justifies it.
+- Partnerships with complementary creators (non-competing niches).
+- Archive and index best community moments for social proof.
+
+### Monetization
+- Expand product catalog based on what sold in days 1-30.
+- Test annual vs monthly pricing for server subscriptions.
+- Evaluate NPC pack bundles for server owners.
+
+### Risks
+- Platform policy updates that restrict mods or AI NPC usage.
+- Competitors undercutting on price without support.
+
+### KPIs
+- Monthly recurring revenue (server/products)
+- Churn rate on subscriptions
+- Organic referral rate (Discord invites, word of mouth)
+
+---
+
+This playbook pairs with workflows in `orchestrator/workflows/` and templates in `templates/`. Generalize phases for future games by swapping `config/games/*.yaml`.

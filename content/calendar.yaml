@@ -1,0 +1,59 @@
+# 12-week content calendar (seed)
+
+weeks:
+  - week: 1
+    category: gta6_news
+    topic: Official source roundup
+    format: short
+  - week: 2
+    category: creator_economy_thesis
+    topic: Why FiveM signal matters (hypothesis)
+    format: long-form
+  - week: 3
+    category: script_devlog
+    topic: Job system spec walkthrough
+    format: short
+  - week: 4
+    category: gta6_news
+    topic: Platform and release window update (confirmed only)
+    format: short
+  - week: 5
+    category: setup_gear
+    topic: Capture and storage setup for open-world launches
+    format: long-form
+  - week: 6
+    category: rp_server_updates
+    topic: Server rules and application flow explainer
+    format: short
+  - week: 7
+    category: npc_pack_demos
+    topic: Bartender NPC prompt demo (local engine)
+    format: short
+  - week: 8
+    category: creator_economy_thesis
+    topic: Risks of platform dependence
+    format: long-form
+  - week: 9
+    category: script_devlog
+    topic: Config-driven jobs prototype
+    format: short
+  - week: 10
+    category: rp_server_updates
+    topic: Economy tuning diary
+    format: short
+  - week: 11
+    category: gta6_news
+    topic: Pre-launch checklist for creators
+    format: long-form
+  - week: 12
+    category: setup_gear
+    topic: Streaming audio and moderation tools
+    format: short
+
+categories:
+  gta6_news: Official-news reaction and explainers
+  creator_economy_thesis: Strategy and honest risk discussion
+  script_devlog: FiveM script product progress
+  rp_server_updates: Server ops, events, and community
+  npc_pack_demos: AI NPC pack examples
+  setup_gear: Hardware and workflow setup

@@ -23,7 +23,7 @@ Variables:
 
 **IP Safety Reminder:**
 - Share official links and clips only.
-- Do **not** post leaked footage, files, or re-host Rockstar art/logos as your own.[web:45]
+- Do **not** post leaked footage, files, or re-host Rockstar art/logos as your own.
 
 ---
 

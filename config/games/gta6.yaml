@@ -1,0 +1,41 @@
+slug: gta6
+name: Grand Theft Auto VI
+release_date: TBD  # Update when Rockstar confirms a public release date
+platforms:
+  - PS5
+  - Xbox Series X|S
+  # PC platform details may be announced later
+official_sources:
+  - https://www.rockstargames.com/gta6
+  - https://www.rockstargames.com/newswire
+coverage_sources:
+  - https://www.rockstargames.com/newswire
+  # Add reputable press outlets you trust; avoid leak aggregators
+ip_safety:
+  forbid_leaks: true
+  forbid_datamining: true
+  forbid_piracy: true
+  banned_patterns:
+    - leak(?:ed|s)?
+    - datamin(?:e|ed|ing)
+    - data\s*mine
+    - pirat(?:e|ed|ing)
+    - cracked\s+copy
+    - torrent
+    - early\s+copy
+    - stolen\s+(?:build|footage|assets?)
+    - re-?hosted\s+(?:art|assets?|logo)
+content_tags:
+  - gta6
+  - launch
+  - creator-economy
+  - news
+community_channels:
+  discord_news: "#gta6-news"
+  discord_chat: "#gta6-chat"
+  discord_creators: "#creator-collab"
+monetization_categories:
+  - affiliate
+  - digital_products
+  - subscriptions
+  - sponsorships

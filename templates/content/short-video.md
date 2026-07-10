@@ -13,11 +13,11 @@ A skeleton for 30–90 second launch-focused shorts.
 
 1. **Hook (0–3s)**
    - Bold statement about `{game}` or `{release_date}`.
-   - Visual countdown or "CONFIRMED" stamp for news.[web:45]
+   - Visual countdown or "CONFIRMED" stamp for news.
 
 2. **Value (3–45s)**
    - One focused topic per short: setup tip, performance tweak, early money route, or news explainer.
-   - Use confirmed facts and clearly label rumors.[web:45]
+   - Use confirmed facts and clearly label rumors.
 
 3. **CTA (45–90s)**
    - Invite viewers to a hub: Discord, email list, or long-form guide.
