@@ -1,57 +1,127 @@
-# Architecture & Modules
+# Architecture
 
-This repo is designed as a **creator launch system**, not a single app. The goal is to make it trivial to plug in a new game or event and spin up:
+Creator Toolbox is a creator launch system: config, product modules, and a Python orchestrator that runs sequential workflows for content, community, and monetization. GTA 6 is the first target; the layout stays game-agnostic via YAML config.
 
-- a content stack (YouTube, TikTok, blogs, email),
-- a community stack (Discord, events, roles), and
-- a monetization stack (affiliates, products, sponsorships).
+## System goals
 
-## High-Level Modules
+- Run repeatable launch pipelines without rebuilding tooling per game.
+- Keep IP safety and dry-run defaults in the orchestrator, not in operator memory.
+- Ship local-first: tests and workflows run offline with stubbed integrations.
+- Document product tracks (scripts, RP server, NPC packs, content engine) in one repo.
 
-1. **Content Engine**
-   - Topic research and trend tracking.
-   - Script and outline generation for shorts, long-form, and multi-part series.
-   - Thumbnail/title hook frameworks.
+## Design principles
 
-2. **Community Engine**
-   - Discord channel/role schemas.
-   - Event templates (launch streams, countdowns, RP sessions).
-   - Onboarding flows and announcement patterns.
+- **Supervisor + sequential pipeline**: one router runs steps in order. No uncontrolled agent swarms.
+- **Bounded critic loops**: IP review runs at defined steps, not in open-ended retry loops.
+- **Config over code**: game facts, channels, and safety rules live in `config/games/`.
+- **Explicit stubs**: publish and queue steps record intent; they do not pretend to hit live APIs in this pass.
+- **Small modules**: agents do one job and write structured artifacts for the next step.
 
-3. **Monetization Engine**
-   - Affiliate block templates (gear, software, services).
-   - Digital product structures (guides, overlays, setup checklists).
-   - Sponsorship inventory and placement guidelines.
+## Layered architecture
 
-4. **Orchestrator Layer**
-   - Agent definitions (research, draft, publish, report).
-   - Workflow graphs ("new trailer" → research → scripts → posts).
-   - Configs for integrating with external APIs (YouTube, Discord, email, analytics).
+### Config layer
 
-## Planned Directory Structure
+- `config/games/*.yaml` — slug, platforms, sources, IP rules, channels, monetization categories.
+- `.env` — secrets and optional overrides (`GAME_SLUG`, `RELEASE_DATE`).
+
+### Module layer
+
+Product and ops scaffolds that workflows and humans use:
+
+- `scripts/` — FiveM script catalog and specs
+- `servers/` — RP server design and content pipeline
+- `npc-packs/` — AI NPC pack engine and configs
+- `templates/` — parameterized markdown scaffolds
+- `playbooks/` — shipping cadence and KPIs per business track
+- `content/` — calendar and research notes
+
+### Orchestrator layer
+
+- `models.py` — `GameConfig`, `Settings`, `WorkflowDefinition`, `AgentResult`, `RunLogEntry`
+- `settings.py` — load game config and env
+- `router.py` — load YAML workflows, execute steps, retries, run summary
+- `agents/` — research, drafting, critic, community, monetization
+- `workflows/*.yaml` — declarative step lists
+
+### Interface layer
+
+- CLI: `python -m orchestrator --list`, `python -m orchestrator gta6_news_drop`
+- JSON run logs in `orchestrator/logs/` when `--log` is set
+- Draft output to `output/` when `--out` is set
+
+```mermaid
+flowchart TB
+  Config["config/games/*.yaml"] --> Settings
+  Env[".env overrides"] --> Settings
+  YAML["workflows/*.yaml"] --> Router
+  Settings --> Router
+  Router --> Research
+  Router --> Drafting
+  Router --> Critic
+  Router --> Community
+  Router --> Monetization
+  Drafting --> Templates["templates/"]
+  Router --> Logs["orchestrator/logs/"]
+```
+
+## Agent roles
+
+| Agent | Role |
+|-------|------|
+| research | Build structured research placeholders from game config and payload facts |
+| drafting | Render a template into `artifacts.drafts[step_id]` |
+| critic | Block outputs that violate `ip_safety` rules |
+| community | Queue Discord, YouTube, email, or social actions (stubbed) |
+| monetization | Attach monetization suggestions by content type |
+
+## Workflow execution model
+
+1. Router loads a workflow by name from YAML.
+2. Each step specifies `id`, `agent`, and agent-specific fields (`template`, `review_step`, `action`, etc.).
+3. Agents read/write shared `RunState` (`artifacts`, `blocked`, `steps`).
+4. If critic blocks, later community/monetization steps still run but record `skipped` where appropriate.
+5. Run ends with `artifacts.summary` and optional JSON log file.
+
+## Retry and failure semantics
+
+- Steps may set `retries: N`. The router re-runs on `error` status up to N times.
+- Uncaught exceptions become `error` results and are logged.
+- `blocked` is terminal for publish intent but does not halt the audit trail.
+
+## Human-in-the-loop approvals
+
+Steps with `requires_approval: true` skip unless the run payload includes `approved: true`. Use this for launch posts or paid promos before live integrations exist.
+
+## Observability and logging
+
+- Each step produces an `AgentResult` with status and message.
+- `--log` writes a timestamped JSON file under `orchestrator/logs/`.
+- CLI prints `artifacts.summary` as JSON on stdout.
+
+## Security and IP safety
+
+- No secrets in the repo; use `.env` (gitignored).
+- Critic enforces per-game `ip_safety.banned_patterns` when `forbid_leaks` is true.
+- Docs and templates use confirmed sources only; speculation is labeled.
+- Do not reference leaked builds, datamined assets, or re-hosted Rockstar art.
+
+## Directory tree
 
 ```text
 Creator-toolbox/
-  README.md
+  config/games/gta6.yaml
   docs/
-    architecture.md
-    gta6-launch-playbook.md
-  templates/
-    content/
-      short-video.md
-    community/
-      discord-announcement.md
+  templates/content|community|monetization/
   orchestrator/
-    workflows/
-    agents/
+    models.py settings.py router.py utils.py
+    agents/ workflows/*.yaml logs/
+  scripts/ servers/ npc-packs/ playbooks/ content/
+  tests/ .github/
 ```
 
-## GTA 6 as First Use Case
+## Future roadmap notes
 
-GTA 6 has a fixed launch window and a long lead-up with marketing, trailers, and pre-orders.[web:19][web:29][web:26] This repo will use that timeline as the first concrete scenario for building and testing:
-
-- "news drop" workflows (new trailer, feature reveal),
-- launch-week streaming and content schedules, and
-- IP-safe creator practices (no leaked builds, no re-hosted Rockstar art).[web:45]
-
-Future games and releases can reuse the same modules by swapping configuration and templates.
+- Phase 2+: real Discord/YouTube/email adapters behind the community agent.
+- Optional approval UI or CLI prompt for `requires_approval` steps.
+- Analytics agent and KPI ingestion from platform APIs.
+- Additional game configs by copying `gta6.yaml` pattern.
