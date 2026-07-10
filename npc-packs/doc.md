@@ -38,6 +38,22 @@ RP server owners who want ambient NPCs (bartenders, shopkeepers, quest givers) w
 
 ## Next steps
 
-1. Add 2-3 more example configs (shopkeeper, quest giver)
+1. Add 2-3 more example configs (shopkeeper, quest giver) — done in `config/`
 2. Wire `npc_pack_release` workflow to sales email template
-3. Document integration pattern for FiveM resource (future)
+3. Document integration pattern for FiveM resource (below)
+
+## FiveM integration sketch
+
+Minimal resource pattern to call the prompt engine from a server export:
+
+```lua
+-- npc_bridge/server.lua (sketch — run Python engine out-of-process or pre-bake prompts)
+RegisterNetEvent('npcpacks:requestLine', function(npcId, context)
+    local src = source
+    -- Load baked prompt JSON generated offline via: python npc-packs/engine.py
+    -- Send resulting dialogue line to client NUI
+    TriggerClientEvent('npcpacks:showLine', src, "..." )
+end)
+```
+
+Generate prompts offline per NPC config, version the JSON alongside `npc-packs/config/*.yaml`, and hot-reload on resource restart.

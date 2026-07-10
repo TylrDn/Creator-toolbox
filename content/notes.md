@@ -29,4 +29,6 @@ Working scratchpad for research and ideas. Not published as-is.
 ```bash
 python -m orchestrator gta6_news_drop --var hook="..." --var summary="..."
 python -m orchestrator product_launch --var news_type="product" --var summary="..."
+./scripts/weekly_run.sh 3
+python -m orchestrator weekly_report
 ```

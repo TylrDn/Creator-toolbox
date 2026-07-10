@@ -1,0 +1,13 @@
+config/jobs.yaml
+# Reference schema for job definitions (authoritative config is shared/jobs.lua for v1).
+# Copy fields from here when adding jobs; keep Lua and YAML in sync manually.
+
+jobs:
+  delivery_driver:
+    label: Delivery Driver
+    blip: { sprite: 477, color: 5, scale: 0.8 }
+    clockIn: { x: 127.5, y: -1284.0, z: 29.3, radius: 2.5 }
+    payout: { base: 150, bonusPerStop: 25 }
+    vehicle: boxville2
+    uniform: { component: 11, drawable: 15, texture: 0 }
+    maxStopsPerTask: 3

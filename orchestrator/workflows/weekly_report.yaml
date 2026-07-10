@@ -1,0 +1,7 @@
+name: weekly_report
+description: Generate a weekly KPI and run summary report
+steps:
+  - id: report
+    agent: report
+    extra:
+      kpi_path: content/kpi-template.yaml

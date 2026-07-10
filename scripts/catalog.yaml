@@ -1,7 +1,7 @@
 products:
   - id: custom-job-system
     name: Custom Job System
-    status: spec
+    status: beta
     price_hint: "$29-79"
     target_customer: RP server owners
     short_description: Configurable job framework with payouts, uniforms, and progression hooks.

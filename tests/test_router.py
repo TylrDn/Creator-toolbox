@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import pytest
 
+from orchestrator.models import WorkflowDefinition, WorkflowStep
 from orchestrator.router import Router, build_default_router, load_all_workflows, load_workflow
 from orchestrator.settings import load_settings
+from orchestrator.validation import validate_workflow
 
 
 def test_workflow_files_parse() -> None:
     workflows = load_all_workflows()
-    expected = {"gta6_news_drop", "product_launch", "rp_server_launch", "npc_pack_release"}
+    expected = {"gta6_news_drop", "product_launch", "rp_server_launch", "npc_pack_release", "community_onboarding", "weekly_report"}
     assert expected.issubset(set(workflows.keys()))
     for name, wf in workflows.items():
         assert wf.name == name
@@ -71,3 +73,28 @@ def test_unknown_workflow_raises() -> None:
     settings = load_settings(game_slug="gta6", use_dotenv=False)
     with pytest.raises(KeyError):
         router.run("does_not_exist", settings, {})
+
+
+def test_unknown_agent_records_error_step() -> None:
+    bad = WorkflowDefinition(
+        name="bad_agent_test",
+        description="test",
+        steps=[WorkflowStep(id="bad", agent="nonexistent")],
+    )
+    router = Router(workflows={"bad_agent_test": bad})
+    settings = load_settings(game_slug="gta6", use_dotenv=False)
+    summary = router.run("bad_agent_test", settings, {})
+    assert summary.steps[0].status == "error"
+    assert "Unknown agent" in summary.steps[0].message
+
+
+def test_validate_workflow_catches_bad_template() -> None:
+    wf = WorkflowDefinition(
+        name="bad_template",
+        description="test",
+        steps=[
+            WorkflowStep(id="d", agent="drafting", template="does/not/exist.md"),
+        ],
+    )
+    errors = validate_workflow(wf)
+    assert any("template not found" in e for e in errors)

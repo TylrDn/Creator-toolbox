@@ -52,3 +52,9 @@ Keep faction count small at launch; add branches after moderation capacity grows
 - Platform ToS changes affecting monetization
 
 See `servers/content-pipeline.md` for acquisition and `playbooks/rp-server.md` for shipping cadence.
+
+See also:
+
+- [`servers/moderation-sop.md`](moderation-sop.md) — staff procedures
+- [`servers/subscription-tiers.md`](subscription-tiers.md) — monetization tiers (hypothesis)
+- [`scripts/custom-jobs/`](../scripts/custom-jobs/) — standalone job resource for entry-level work

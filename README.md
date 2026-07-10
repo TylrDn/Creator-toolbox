@@ -10,26 +10,26 @@ GTA 6 may drive one of the largest gaming attention cycles in years. Rockstar's 
 
 ## Four business tracks
 
-1. **Script products** — FiveM-compatible resources (jobs, economy, UI). Catalog and specs in `scripts/`.
-2. **RP server business** — Server design, content pipeline, and launch workflows in `servers/` and `playbooks/rp-server.md`.
-3. **AI NPC packs** — Role configs and a local prompt engine in `npc-packs/`.
-4. **Content + community + monetization engine** — Templates, YAML workflows, and the orchestrator tie the other tracks together.
+1. **Script products** — FiveM-compatible resources. **Custom job system (beta)** in [`scripts/custom-jobs/`](scripts/custom-jobs/).
+2. **RP server business** — Design, moderation SOP, subscription tiers in `servers/`.
+3. **AI NPC packs** — bartender, shopkeeper, quest giver configs + [`npc-packs/engine.py`](npc-packs/engine.py).
+4. **Content + community + monetization engine** — Templates, YAML workflows, weekly run script.
 
 ## Repo structure
 
 ```text
 Creator-toolbox/
-  config/games/gta6.yaml       # Game config, IP rules, channels
-  docs/                        # Architecture, thesis, playbook, roadmap, FAQ
-  templates/                   # Parameterized markdown scaffolds
-  orchestrator/                # YAML workflows, agents, CLI
-  scripts/                     # Product catalog, specs, tools
-  servers/                     # RP server design and content pipeline
-  npc-packs/                   # NPC engine and example configs
-  playbooks/                   # Shipping cadence per business track
-  content/                     # Calendar and research notes
-  tests/                       # pytest suite
-  .github/                     # CI, Dependabot, issue/PR templates
+  config/games/          # gta6.yaml, example.yaml
+  docs/                  # Architecture, thesis, playbook, roadmap, FAQ
+  templates/             # Parameterized markdown scaffolds
+  orchestrator/        # YAML workflows, agents, CLI, integrations/
+  scripts/               # Catalog, custom-jobs/, weekly_run.sh, tools/
+  servers/               # RP server design, moderation, subscriptions
+  npc-packs/             # NPC engine and configs
+  playbooks/             # Shipping cadence per business track
+  content/               # Calendar, KPI template, notes
+  tests/                 # pytest suite (38 tests)
+  .github/               # CI, Dependabot, issue/PR templates
 ```
 
 ## Getting started
@@ -39,67 +39,63 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# List workflows
 python -m orchestrator --list
 
-# Run a news-drop pipeline (dry run, nothing published)
 python -m orchestrator gta6_news_drop \
   --var hook="Official update" \
   --var summary="New trailer on Rockstar Newswire" \
   --var news_type="trailer" \
   --var source="https://www.rockstargames.com/newswire" \
-  --var cta="Join Discord"
+  --var cta="Join Discord" \
+  --out --log
 
-# Save latest draft and write a run log
-python -m orchestrator gta6_news_drop --var hook="Test" --out --log
+# Weekly content loop (calendar week 3 = product launch draft)
+./scripts/weekly_run.sh 3
 
-# Run tests
 pytest tests/ -v --cov=orchestrator
 ```
 
-Copy `.env.example` to `.env` for optional overrides (`GAME_SLUG`, `RELEASE_DATE`, integration keys). Never commit `.env`.
+Copy `.env.example` to `.env` for `GAME_SLUG`, `RELEASE_DATE`, and `DISCORD_WEBHOOK_URL`. Never commit `.env`.
+
+### Add another game
+
+Copy [`config/games/example.yaml`](config/games/example.yaml), edit fields, then:
+
+```bash
+python -m orchestrator gta6_news_drop --game your-slug --var summary="Update"
+```
 
 ## How the orchestrator works
 
-Workflows are YAML files in `orchestrator/workflows/`. Each step calls an agent:
-
 ```text
-research → drafting → critic → community / monetization
+research → drafting → critic → community / monetization / report
 ```
 
-- **research** — structured placeholders from game config
-- **drafting** — renders templates from `templates/`
-- **critic** — blocks leak/datamine/piracy language when `ip_safety.forbid_leaks` is true
-- **community** — queues Discord/YouTube/email actions (stubbed; honors dry run)
-- **monetization** — attaches monetization suggestions by content type
+Workflows: `gta6_news_drop`, `product_launch`, `rp_server_launch`, `npc_pack_release`, `community_onboarding`, `weekly_report`.
 
-Runs default to **dry run**. Pass `--live` for integration stubs only (no real API calls in this pass).
-
-Available workflows: `gta6_news_drop`, `product_launch`, `rp_server_launch`, `npc_pack_release`.
+- **dry run** (default): queues actions locally
+- **`--live --approved`**: Discord webhook when `DISCORD_WEBHOOK_URL` is set; publish steps require approval
+- **`--out --log`**: saves drafts and JSON run logs
 
 ## Roadmap
 
-See [docs/roadmap.md](docs/roadmap.md). Phases 0–1 (repo bootstrap + orchestrator MVP) are largely complete. Phase 2+ adds real integrations, analytics, and expanded product catalogs.
+See [docs/roadmap.md](docs/roadmap.md). Phases 0–4 complete in repo; Phase 5 partial (Discord + report done; email analytics pending).
 
 ## Safety and IP policy
 
-- Use official sources; label speculation.
-- Critic agent enforces per-game `ip_safety` rules in config.
-- No leaked builds, datamined assets, or re-hosted Rockstar art in templates or examples.
-- See [docs/gta6-creator-economy-thesis.md](docs/gta6-creator-economy-thesis.md) for strategic risks.
+- Critic reviews all `--var` values and drafts before publish.
+- No leaked builds, datamined assets, or re-hosted Rockstar art.
 
 ## Development workflow
 
-1. Branch from `main`: `feat/your-feature`
+1. Branch from `main`
 2. Change code, docs, and tests together
-3. Run `pytest tests/ -v`
-4. Open a PR using the template
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md) for contributor and AI-agent conventions.
+3. `pytest tests/ -v`
+4. Open a PR
 
 ## Status
 
-**Early but operational.** The orchestrator runs four workflows offline, tests pass in CI, and product modules are documented scaffolds. External publish integrations are stubbed for a later phase.
+**Operational v1.** Custom job system at beta, 6 workflows, 38 tests, Discord webhook optional. Run `./scripts/weekly_run.sh` for the human-in-the-loop content loop.
 
 ## License
 

@@ -5,6 +5,7 @@ from orchestrator.agents.community import CommunityAgent
 from orchestrator.agents.critic import CriticAgent
 from orchestrator.agents.drafting import DraftingAgent
 from orchestrator.agents.monetization import MonetizationAgent
+from orchestrator.agents.report import ReportAgent
 from orchestrator.agents.research import ResearchAgent
 from orchestrator.models import AgentResult
 
@@ -14,6 +15,7 @@ AGENT_REGISTRY: dict[str, type[BaseAgent]] = {
     "critic": CriticAgent,
     "community": CommunityAgent,
     "monetization": MonetizationAgent,
+    "report": ReportAgent,
 }
 
 
@@ -32,6 +34,7 @@ __all__ = [
     "CriticAgent",
     "DraftingAgent",
     "MonetizationAgent",
+    "ReportAgent",
     "ResearchAgent",
     "RunState",
     "build_agent",

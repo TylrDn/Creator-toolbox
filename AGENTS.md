@@ -38,7 +38,7 @@ pytest tests/ --cov=orchestrator
 - `docs/` — architecture, thesis, playbook, roadmap, FAQ
 - `templates/` — content, community, monetization markdown scaffolds
 - `orchestrator/` — `models.py`, `settings.py`, `router.py`, `utils.py`, `agents/`, `workflows/*.yaml`, CLI
-- `scripts/` — product catalog, specs, `generate_lua.py`
+- `scripts/` — product catalog, `custom-jobs/` FiveM resource, `weekly_run.sh`, `generate_lua.py`
 - `servers/` — RP server design and content pipeline
 - `npc-packs/` — NPC prompt engine and configs
 - `playbooks/` — per-track shipping guides
@@ -48,7 +48,7 @@ pytest tests/ --cov=orchestrator
 ## Orchestrator model
 
 - A **workflow** is a YAML file listing ordered **steps** with an `agent` field.
-- Agents: `research`, `drafting`, `critic`, `community`, `monetization`.
+- Agents: `research`, `drafting`, `critic`, `community`, `monetization`, `report`.
 - The **router** loads workflows, runs steps sequentially, supports retries, and writes optional JSON logs.
 - The **critic** enforces IP-safety from `config/games/*.yaml`. Blocked runs skip publish-style steps but keep the audit trail.
 - **Safety defaults**: `Settings.dry_run` is `True` unless `--live` is passed.

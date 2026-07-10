@@ -1,0 +1,21 @@
+name: community_onboarding
+description: Draft Discord onboarding content for new members
+steps:
+  - id: research
+    agent: research
+
+  - id: draft_onboarding
+    agent: drafting
+    template: community/onboarding.md
+
+  - id: review_onboarding
+    agent: critic
+    extra:
+      review_drafts: all
+
+  - id: queue_discord
+    agent: community
+    action: queue_discord
+    requires_approval: true
+    extra:
+      source_step: draft_onboarding

@@ -55,4 +55,5 @@ Use orchestrator workflow `rp_server_launch` or manual templates:
 
 - `content/calendar.yaml` schedules server-themed posts
 - `orchestrator/workflows/rp_server_launch.yaml` drafts Discord + short assets
+- `orchestrator/workflows/community_onboarding.yaml` drafts onboarding posts
 - `config/games/gta6.yaml` supplies game name and channel names

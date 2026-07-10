@@ -1,0 +1,15 @@
+# Weekly KPI template (manual entry or CSV import for report agent)
+
+week: 1
+metrics:
+  content:
+    shorts_published: 0
+    long_form_published: 0
+    avg_ctr_percent: 0
+  community:
+    discord_joins: 0
+    email_signups: 0
+  product:
+    script_page_views: 0
+    demo_server_sessions: 0
+  notes: ""

@@ -58,6 +58,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="write a JSON run log to orchestrator/logs/",
     )
+    parser.add_argument(
+        "--approved",
+        action="store_true",
+        help="mark run as human-approved for requires_approval steps",
+    )
     args = parser.parse_args(argv)
 
     router = build_default_router()
@@ -69,7 +74,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     settings = load_settings(game_slug=args.game, dry_run=not args.live, extra=_parse_vars(args.var))
-    payload = {"variables": _parse_vars(args.var)}
+    payload: dict = {"variables": _parse_vars(args.var)}
+    if args.approved:
+        payload["approved"] = True
     summary = router.run(args.workflow, settings, payload, write_log=args.log)
 
     if args.out and not summary.blocked:

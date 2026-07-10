@@ -10,7 +10,8 @@ from typing import Any
 from orchestrator.agents import build_agent
 from orchestrator.agents.base import RunState
 from orchestrator.models import AgentResult, RunLogEntry, Settings, WorkflowDefinition, WorkflowStep
-from orchestrator.utils import PROJECT_ROOT, epoch_ms, load_yaml, utc_timestamp
+from orchestrator.utils import epoch_ms, load_yaml, utc_timestamp
+from orchestrator.validation import validate_workflow_or_raise
 
 LOGS_DIR = Path(__file__).resolve().parent / "logs"
 WORKFLOWS_DIR = Path(__file__).resolve().parent / "workflows"
@@ -34,11 +35,13 @@ def load_workflow(path: str | Path) -> WorkflowDefinition:
     """Load a single workflow YAML file."""
     data = load_yaml(path)
     steps = [_parse_step(step) for step in data.get("steps", [])]
-    return WorkflowDefinition(
+    workflow = WorkflowDefinition(
         name=str(data.get("name", Path(path).stem)),
         description=str(data.get("description", "")),
         steps=steps,
     )
+    validate_workflow_or_raise(workflow)
+    return workflow
 
 
 def load_all_workflows(directory: str | Path | None = None) -> dict[str, WorkflowDefinition]:
@@ -121,7 +124,18 @@ class Router:
         )
 
     def _execute_step(self, state: RunState, step: WorkflowStep) -> AgentResult:
-        agent = build_agent(step.agent)
+        try:
+            agent = build_agent(step.agent)
+        except KeyError as exc:
+            result = AgentResult(
+                agent=step.agent,
+                step_id=step.id,
+                status="error",
+                message=str(exc),
+            )
+            state.steps.append(result)
+            return result
+
         attempts = step.retries + 1
         last_result: AgentResult | None = None
 

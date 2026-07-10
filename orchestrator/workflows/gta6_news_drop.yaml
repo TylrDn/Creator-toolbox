@@ -24,9 +24,11 @@ steps:
   - id: publish_discord
     agent: community
     action: publish_discord
+    requires_approval: true
     extra:
       source_step: draft_discord
 
   - id: queue_youtube
     agent: community
     action: queue_youtube
+    requires_approval: true

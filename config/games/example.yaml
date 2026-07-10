@@ -1,0 +1,27 @@
+slug: example
+name: Example Game
+release_date: TBD
+platforms:
+  - PC
+  - Console
+official_sources:
+  - https://example.com/official
+coverage_sources:
+  - https://example.com/news
+ip_safety:
+  forbid_leaks: true
+  forbid_datamining: true
+  forbid_piracy: true
+  banned_patterns:
+    - leak(?:ed|s)?
+    - datamin(?:e|ed|ing)
+    - pirat(?:e|ed|ing)
+content_tags:
+  - example
+  - launch
+community_channels:
+  discord_news: "#news"
+  discord_chat: "#general"
+monetization_categories:
+  - affiliate
+  - digital_products
