@@ -36,6 +36,54 @@ def test_critic_passes_clean_draft() -> None:
     assert not state.blocked
 
 
+def test_critic_passes_clean_discord_draft() -> None:
+    """Discord template IP reminder mentions 'leaked'; must not false-positive."""
+    agent = CriticAgent()
+    settings = load_settings(game_slug="gta6", use_dotenv=False)
+    state = RunState(
+        workflow="test",
+        settings=settings,
+        payload={"variables": {"summary": "Official trailer looks great"}},
+    )
+    state.artifacts["drafts"] = {
+        "draft_discord": (
+            "**Body:**\n> Official trailer looks great\n\n"
+            "**IP Safety Reminder:**\n- Do **not** post leaked footage.\n"
+        ),
+    }
+    step = WorkflowStep(
+        id="review_assets",
+        agent="critic",
+        extra={"review_drafts": "all"},
+    )
+    result = agent.run(state, step)
+    assert result.status == "ok"
+    assert not state.blocked
+
+
+def test_critic_blocks_leak_in_payload_variables() -> None:
+    """Leaks in summary must block even when short-video draft is clean."""
+    agent = CriticAgent()
+    settings = load_settings(game_slug="gta6", use_dotenv=False)
+    state = RunState(
+        workflow="test",
+        settings=settings,
+        payload={"variables": {"hook": "Clean hook", "summary": "This leaked build is bad"}},
+    )
+    state.artifacts["drafts"] = {
+        "draft_short": "Clean short content with hook: Clean hook",
+        "draft_discord": "> Clean hook\n**IP Safety Reminder:**\n- Do **not** post leaked footage.",
+    }
+    step = WorkflowStep(
+        id="review_assets",
+        agent="critic",
+        extra={"review_drafts": "all"},
+    )
+    result = agent.run(state, step)
+    assert result.status == "blocked"
+    assert state.blocked is True
+
+
 def test_drafting_renders_template() -> None:
     settings = load_settings(game_slug="gta6", use_dotenv=False)
     settings.extra = {"hook": "Countdown", "cta": "Subscribe"}

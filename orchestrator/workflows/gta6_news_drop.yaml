@@ -12,9 +12,10 @@ steps:
     agent: drafting
     template: content/short-video.md
 
-  - id: review_short
+  - id: review_assets
     agent: critic
-    review_step: draft_short
+    extra:
+      review_drafts: all
 
   - id: monetize_short
     agent: monetization

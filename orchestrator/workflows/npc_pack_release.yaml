@@ -8,13 +8,14 @@ steps:
     agent: drafting
     template: monetization/product-bundle.md
 
-  - id: review_pack
-    agent: critic
-    review_step: draft_npc_pack
-
   - id: draft_sales_assets
     agent: drafting
     template: content/email-update.md
+
+  - id: review_pack
+    agent: critic
+    extra:
+      review_drafts: all
 
   - id: monetize_pack
     agent: monetization

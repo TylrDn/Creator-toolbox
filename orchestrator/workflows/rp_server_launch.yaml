@@ -15,4 +15,5 @@ steps:
 
   - id: review_launch_assets
     agent: critic
-    review_step: draft_launch_posts
+    extra:
+      review_drafts: all

@@ -22,7 +22,29 @@ def test_gta6_news_drop_step_order() -> None:
     step_ids = [s.id for s in wf.steps]
     assert step_ids[0] == "research"
     assert "draft_discord" in step_ids
-    assert "review_short" in step_ids
+    assert "review_assets" in step_ids
+    review_idx = step_ids.index("review_assets")
+    assert review_idx > step_ids.index("draft_discord")
+    assert review_idx > step_ids.index("draft_short")
+    assert review_idx < step_ids.index("publish_discord")
+
+
+def test_gta6_news_drop_blocks_leak_in_summary() -> None:
+    router = build_default_router()
+    settings = load_settings(game_slug="gta6", dry_run=True, use_dotenv=False)
+    payload = {
+        "variables": {
+            "hook": "Clean hook",
+            "summary": "This leaked build is amazing",
+            "news_type": "trailer",
+            "source": "https://www.rockstargames.com/newswire",
+            "cta": "Join Discord",
+        }
+    }
+    summary = router.run("gta6_news_drop", settings, payload)
+    assert summary.blocked is True
+    publish_steps = [s for s in summary.steps if s.agent == "community" and s.status == "ok"]
+    assert publish_steps == []
 
 
 def test_router_executes_workflow_without_crashing() -> None:

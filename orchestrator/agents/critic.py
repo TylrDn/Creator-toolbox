@@ -19,6 +19,17 @@ DEFAULT_BANNED_PATTERNS = [
     r"re-?hosted\s+(?:art|assets?|logo)",
 ]
 
+# Template boilerplate that mentions banned words in a negation context.
+_BOILERPLATE_SECTION = re.compile(
+    r"\*\*IP Safety Reminder:\*\*.*?(?=\n---|\Z)",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def _strip_boilerplate(text: str) -> str:
+    """Remove template IP-safety sections that mention banned words in negation."""
+    return _BOILERPLATE_SECTION.sub("", text)
+
 
 class CriticAgent(BaseAgent):
     name = "critic"
@@ -36,12 +47,38 @@ class CriticAgent(BaseAgent):
                 violations.append(match.group(0).lower())
         return violations
 
-    def _resolve_draft(self, state: RunState, step: WorkflowStep) -> str:
+    def _compile_regexes(self, state: RunState) -> list[re.Pattern[str]]:
+        ip_rules = state.settings.game.ip_safety
+        patterns = ip_rules.get("banned_patterns")
+        if patterns:
+            return [re.compile(rf"\b{p}\b", re.IGNORECASE) for p in patterns]
+        return self._regexes
+
+    def _gather_review_texts(self, state: RunState, step: WorkflowStep) -> list[str]:
+        """Collect user variables and draft bodies to scan."""
+        texts: list[str] = []
+
+        for value in state.payload.get("variables", {}).values():
+            if isinstance(value, str) and value.strip():
+                texts.append(value)
+
         drafts = state.artifacts.get("drafts", {})
-        review_key = step.review_step or step.id.replace("review_", "draft_")
-        if review_key in drafts:
-            return drafts[review_key]
-        return state.artifacts.get("latest_draft", "")
+        review_drafts = step.extra.get("review_drafts")
+        if review_drafts == "all":
+            keys = list(drafts.keys())
+        elif isinstance(review_drafts, list):
+            keys = list(review_drafts)
+        elif step.review_step:
+            keys = [step.review_step]
+        else:
+            fallback = step.id.replace("review_", "draft_")
+            keys = [fallback] if fallback in drafts else []
+
+        for key in keys:
+            if key in drafts:
+                texts.append(_strip_boilerplate(drafts[key]))
+
+        return texts
 
     def run(self, state: RunState, step: WorkflowStep) -> AgentResult:
         ip_rules = state.settings.game.ip_safety
@@ -55,18 +92,15 @@ class CriticAgent(BaseAgent):
                 )
             )
 
-        patterns = ip_rules.get("banned_patterns")
-        if patterns:
-            regexes = [re.compile(rf"\b{p}\b", re.IGNORECASE) for p in patterns]
-        else:
-            regexes = self._regexes
+        regexes = self._compile_regexes(state)
+        review_texts = self._gather_review_texts(state, step)
 
-        draft = self._resolve_draft(state, step)
         violations: list[str] = []
-        for regex in regexes:
-            match = regex.search(draft)
-            if match:
-                violations.append(match.group(0).lower())
+        for text in review_texts:
+            for regex in regexes:
+                match = regex.search(text)
+                if match:
+                    violations.append(match.group(0).lower())
 
         if violations:
             unique = sorted(set(violations))

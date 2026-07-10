@@ -14,7 +14,8 @@ steps:
 
   - id: review_assets
     agent: critic
-    review_step: draft_email
+    extra:
+      review_drafts: all
 
   - id: monetize_launch
     agent: monetization
