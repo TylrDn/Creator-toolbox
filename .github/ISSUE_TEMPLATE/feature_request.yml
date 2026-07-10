@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest an enhancement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What problem does this solve? Which business track (scripts, server, NPC, content)?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - orchestrator
+        - docs
+        - templates
+        - scripts
+        - servers
+        - npc-packs
+        - ci
+        - other
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope notes
+      options:
+        - label: Willing to open a PR
+        - label: Needs design discussion first
