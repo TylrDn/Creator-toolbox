@@ -1,0 +1,83 @@
+name: Merge open PRs
+
+# Merges all open PRs whose CI checks have passed.
+# Triggers:
+#   - Automatically every hour (schedule)
+#   - On every push to main (cascades queued PRs)
+#   - Manually via Actions > "Merge open PRs" > Run workflow (supports dry-run)
+#
+# Requires "Allow GitHub Actions to create and approve pull requests"
+# in repository Settings > Actions > General.
+
+on:
+  # Manual trigger with optional dry-run
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run — list PRs without merging"
+        type: boolean
+        default: false
+  # Automatically run every hour so Dependabot and other open PRs merge without
+  # needing a manual button press.
+  schedule:
+    - cron: "0 * * * *"
+  # Also run whenever a PR is merged into main, so queued PRs can cascade.
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge passing open PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          echo "Fetching open PRs with passing CI..."
+          # Filter to only PRs where all status checks have passed
+          prs=$(gh pr list \
+                  --repo "$GITHUB_REPOSITORY" \
+                  --state open \
+                  --json number,title,statusCheckRollup \
+                  --jq '[.[] | select(
+                     (.statusCheckRollup | length > 0) and
+                     (.statusCheckRollup | all(
+                       .conclusion == "success" or
+                       .conclusion == "skipped" or
+                       .conclusion == "neutral"
+                     ))
+                   ) | .number][]')
+
+          if [ -z "$prs" ]; then
+            echo "No open PRs with fully passing CI found."
+            exit 0
+          fi
+
+          for pr in $prs; do
+            title=$(gh pr view "$pr" \
+                      --repo "$GITHUB_REPOSITORY" \
+                      --json title \
+                      --jq '.title')
+            echo ""
+            echo "PR #$pr: $title"
+
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "  [dry-run] would squash-merge #$pr"
+            else
+              gh pr merge "$pr" \
+                --squash \
+                --delete-branch \
+                --yes \
+                && echo "  ✅ Merged #$pr" \
+                || echo "  ⚠️  Skipped #$pr — check for conflicts or branch protection"
+            fi
+          done
+
+          echo ""
+          echo "Done."

@@ -21,7 +21,9 @@ Variables:
 **House rules:**
 - Official clips and links only.
 - Spoiler policy applies in event channels.
-- No leaked footage or re-hosted Rockstar assets.
+
+**IP Safety Reminder:**
+- Do **not** post leaked footage or re-hosted Rockstar assets.
 
 ---
 

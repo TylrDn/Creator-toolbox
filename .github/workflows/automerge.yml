@@ -1,0 +1,31 @@
+name: Dependabot auto-merge
+
+# Automatically merge Dependabot PRs once all CI checks pass.
+# Requires "Allow GitHub Actions to create and approve pull requests"
+# to be enabled in repository Settings > Actions > General.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Dependabot metadata
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge (squash)
+        # Auto-merge fires once all required status checks pass.
+        run: gh pr merge --squash --auto "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
