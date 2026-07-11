@@ -28,7 +28,7 @@ Creator-toolbox/
   npc-packs/             # NPC engine and configs
   playbooks/             # Shipping cadence per business track
   content/               # Calendar, KPI template, notes
-  tests/                 # pytest suite (38 tests)
+  tests/                 # pytest suite (39 tests)
   .github/               # CI, Dependabot, issue/PR templates
 ```
 
@@ -95,7 +95,7 @@ See [docs/roadmap.md](docs/roadmap.md). Phases 0–4 complete in repo; Phase 5 p
 
 ## Status
 
-**Operational v1.** Custom job system at beta, 6 workflows, 38 tests, Discord webhook optional. Run `./scripts/weekly_run.sh` for the human-in-the-loop content loop.
+**Operational v1.** Custom job system at beta, 6 workflows, 39 tests, Discord webhook optional. Run `./scripts/weekly_run.sh` for the human-in-the-loop content loop.
 
 ## License
 
