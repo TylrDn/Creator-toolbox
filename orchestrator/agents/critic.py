@@ -21,8 +21,9 @@ DEFAULT_BANNED_PATTERNS = [
 
 # Template boilerplate that mentions banned words in a negation/reminder context.
 # Matches both "**IP Safety Reminder:**" (inline bold) and "## IP Safety" (section heading).
+# Terminates at the next markdown section (##), horizontal rule (---), or end of string.
 _BOILERPLATE_SECTION = re.compile(
-    r"(?:\*\*IP Safety(?:\s+Reminder)?:\*\*|##\s+IP Safety\b).*?(?=\n(?:##|---|\*\*(?!IP))|\Z)",
+    r"(?:\*\*IP Safety(?:\s+Reminder)?:\*\*|##\s+IP Safety\b).*?(?=\n##\s|\n---\s*\n|\Z)",
     re.DOTALL | re.IGNORECASE,
 )
 

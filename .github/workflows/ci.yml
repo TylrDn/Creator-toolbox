@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +28,8 @@ jobs:
   review:
     runs-on: ubuntu-latest
     needs: test
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -37,14 +41,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Validate imports
+      - name: Validate imports and router
         run: |
           python -c "
           from orchestrator.router import build_default_router
           from orchestrator.settings import load_settings
           from orchestrator.agents import AGENT_REGISTRY
+          router = build_default_router()
           print('Imports OK')
           print('Registered agents:', list(AGENT_REGISTRY.keys()))
+          print('Loaded workflows:', list(router.workflows.keys()))
           "
 
       - name: Validate all workflows parse

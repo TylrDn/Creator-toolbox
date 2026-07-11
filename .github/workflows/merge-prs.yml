@@ -35,7 +35,12 @@ jobs:
                   --json number,title,statusCheckRollup \
                   --jq '[.[] | select(
                       (.statusCheckRollup | length > 0) and
-                      (.statusCheckRollup | all(.conclusion == "SUCCESS" or .conclusion == "SKIPPED" or .state == "SUCCESS"))
+                      (.statusCheckRollup | all(
+                        .conclusion == "SUCCESS" or
+                        .conclusion == "SKIPPED" or
+                        .conclusion == "NEUTRAL" or
+                        .state == "SUCCESS"
+                      ))
                     ) | .number][]')
 
           if [ -z "$prs" ]; then
