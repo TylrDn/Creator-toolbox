@@ -45,7 +45,6 @@ jobs:
         run: |
           python -c "
           from orchestrator.router import build_default_router
-          from orchestrator.settings import load_settings
           from orchestrator.agents import AGENT_REGISTRY
           router = build_default_router()
           print('Imports OK')
