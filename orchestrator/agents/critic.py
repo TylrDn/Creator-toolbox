@@ -19,9 +19,10 @@ DEFAULT_BANNED_PATTERNS = [
     r"re-?hosted\s+(?:art|assets?|logo)",
 ]
 
-# Template boilerplate that mentions banned words in a negation context.
+# Template boilerplate that mentions banned words in a negation/reminder context.
+# Matches both "**IP Safety Reminder:**" (inline bold) and "## IP Safety" (section heading).
 _BOILERPLATE_SECTION = re.compile(
-    r"\*\*IP Safety Reminder:\*\*.*?(?=\n---|\Z)",
+    r"(?:\*\*IP Safety(?:\s+Reminder)?:\*\*|##\s+IP Safety\b).*?(?=\n(?:##|---|\*\*(?!IP))|\Z)",
     re.DOTALL | re.IGNORECASE,
 )
 
